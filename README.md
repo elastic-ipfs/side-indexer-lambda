@@ -7,10 +7,11 @@ AWS Lambda that creates CARv2 side indexes for CAR files uploaded to an S3 bucke
 
 ## Deployment Environment Variables
 
-| Name                         | Default               | Description         |
-| ---------------------------- | --------------------- | ------------------- |
-| AWS_ACCESS_KEY_ID            |                       | The AWS key ID.     |
-| AWS_SECRET_ACCESS_KEY        |                       | The AWS secret key. |
+| Name                         | Default | Description            |
+| ---------------------------- | ------- | ---------------------- |
+| AWS_ACCESS_KEY_ID            |         | The AWS key ID.        |
+| AWS_SECRET_ACCESS_KEY        |         | The AWS secret key.    |
+| AWS_SESSION_TOKEN            |         | The AWS Session token. |
 
 ## Contributing
 

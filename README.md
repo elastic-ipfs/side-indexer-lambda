@@ -1,5 +1,7 @@
 # Side Indexer Lambda
 
+[![build](https://github.com/ipfs-elastic-provider/side-indexer-lambda/actions/workflows/build.yml/badge.svg)](https://github.com/ipfs-elastic-provider/side-indexer-lambda/actions/workflows/build.yml)
+
 AWS Lambda that creates CARv2 side indexes for CAR files uploaded to an S3 bucket.
 
 ## Deployment Environment Variables

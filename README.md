@@ -13,6 +13,8 @@ AWS Lambda that creates CARv2 side indexes for CAR files uploaded to an S3 bucke
 | AWS_SECRET_ACCESS_KEY        |         | The AWS secret key.    |
 | AWS_SESSION_TOKEN            |         | The AWS Session token. |
 
+Note: The Lambda needs `GetObject` and `PutObject` access on the bucket it is deployed on.
+
 ## Contributing
 
 Feel free to join in. All welcome. [Open an issue](https://github.com/ipfs-elastic-provider/side-indexer-lambda/issues)!

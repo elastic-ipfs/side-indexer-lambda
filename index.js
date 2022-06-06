@@ -25,7 +25,7 @@ export async function handler (event, context) {
     })
 
     const getCmd = new GetObjectCommand({
-      Bucket: r.s3.bucket,
+      Bucket: r.s3.bucket.name,
       Key: r.s3.object.key
     })
 

@@ -1,7 +1,7 @@
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import { MultihashIndexSortedWriter } from 'cardex'
 import { CarIndexer } from '@ipld/car/indexer'
-import { Readable } from 'stream'
+import { concat } from 'uint8arrays'
 
 /**
  * @type {import('aws-lambda').Handler<import('aws-lambda').S3Event>}
@@ -20,7 +20,8 @@ export async function handler (event, context) {
       region: r.awsRegion,
       credentials: {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        sessionToken: process.env.AWS_SESSION_TOKEN
       }
     })
 
@@ -40,10 +41,16 @@ export async function handler (event, context) {
       await writer.close()
     })()
 
+    // TODO: stream?
+    const chunks = []
+    for await (const chunk of out) {
+      chunks.push(chunk)
+    }
+
     const putCmd = new PutObjectCommand({
-      Bucket: r.s3.bucket,
+      Bucket: r.s3.bucket.name,
       Key: r.s3.object.key + '.idx',
-      Body: Readable.from(out)
+      Body: concat(chunks)
     })
 
     await s3.send(putCmd)

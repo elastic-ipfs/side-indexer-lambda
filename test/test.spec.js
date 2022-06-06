@@ -28,11 +28,7 @@ test('creates an index on put', async t => {
         return { Body: fs.createReadStream(carPath) }
       }
       if (cmd instanceof PutObjectCommand) {
-        const chunks = []
-        for await (const chunk of cmd.input.Body) {
-          chunks.push(chunk)
-        }
-        putData = concat(chunks)
+        putData = cmd.input.Body
         return
       }
       throw new Error('unexpected command')
@@ -43,7 +39,7 @@ test('creates an index on put', async t => {
     Records: [{
       eventName: 'ObjectCreated:Put',
       s3: {
-        bucket: 'test',
+        bucket: { name: 'test' },
         object: { key: `${cid}.car` }
       }
     }]

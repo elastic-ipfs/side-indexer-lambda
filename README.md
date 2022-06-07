@@ -5,6 +5,8 @@
 
 AWS Lambda that creates CARv2 side indexes for CAR files uploaded to an S3 bucket.
 
+<img src="https://user-images.githubusercontent.com/152863/172424487-9d4d09df-df33-4fa1-a483-ff6565047bd6.png" width="471"/>
+
 ## Deployment Environment Variables
 
 | Name                         | Default | Description            |

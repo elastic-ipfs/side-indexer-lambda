@@ -1,0 +1,6 @@
+---
+component: side-indexer-lambda
+interval: 1000
+metrics:
+  s3-reads: AWS S3 GetObject
+  s3-writes: AWS S3 PutObject

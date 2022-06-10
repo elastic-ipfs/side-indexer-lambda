@@ -1,12 +1,12 @@
-import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
-import { MultihashIndexSortedWriter } from 'cardex'
-import { CarIndexer } from '@ipld/car/indexer'
-import { concat } from 'uint8arrays'
+const { S3Client, GetObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3')
+const { MultihashIndexSortedWriter } = require('cardex')
+const { CarIndexer } = require('@ipld/car/indexer')
+const { concat } = require('uint8arrays')
 
 /**
  * @type {import('aws-lambda').Handler<import('aws-lambda').S3Event>}
  */
-export async function handler (event, context) {
+exports.handler = async function handler (event, context) {
   /** @type {typeof S3Client} */
   const S3 = typeof context?.clientContext?.Custom?.S3Client === 'function'
     ? context.clientContext.Custom.S3Client

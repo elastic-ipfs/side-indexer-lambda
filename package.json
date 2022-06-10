@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "description": "AWS Lambda that creates CARv2 side indexes for CAR files uploaded to an S3 bucket.",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "ava --verbose",
     "lint": "standard"

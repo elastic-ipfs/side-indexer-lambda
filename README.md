@@ -7,15 +7,7 @@ AWS Lambda that creates CARv2 side indexes for CAR files uploaded to an S3 bucke
 
 <img src="https://user-images.githubusercontent.com/152863/172424487-9d4d09df-df33-4fa1-a483-ff6565047bd6.png" width="471"/>
 
-## Deployment Environment Variables
-
-| Name                         | Default | Description            |
-| ---------------------------- | ------- | ---------------------- |
-| AWS_ACCESS_KEY_ID            |         | The AWS key ID.        |
-| AWS_SECRET_ACCESS_KEY        |         | The AWS secret key.    |
-| AWS_SESSION_TOKEN            |         | The AWS Session token. |
-
-Note: The Lambda needs `GetObject` and `PutObject` access on the bucket it is deployed on.
+Note: The Lambda needs a policy with `GetObject` and `PutObject` access to the bucket it is deployed on.
 
 ## Contributing
 

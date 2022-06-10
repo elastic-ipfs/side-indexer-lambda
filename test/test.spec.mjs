@@ -37,10 +37,17 @@ test('creates an index on put', async t => {
 
   await handler({
     Records: [{
-      eventName: 'ObjectCreated:Put',
-      s3: {
-        bucket: { name: 'test' },
-        object: { key: `${cid}.car` }
+      Sns: {
+        Message: JSON.stringify({
+          Records: [{
+            eventSource: 'aws:s3',
+            eventName: 'ObjectCreated:Put',
+            s3: {
+              bucket: { name: 'test' },
+              object: { key: `${cid}.car` }
+            }
+          }]
+        })
       }
     }]
   }, { clientContext: { Custom: { S3Client: MockS3Client } } })

@@ -4,14 +4,14 @@ const { CarIndexer } = require('@ipld/car/indexer')
 const { concat } = require('uint8arrays')
 
 /**
- * @type {import('aws-lambda').Handler<import('aws-lambda').S3Event>}
+ * @type {import('aws-lambda').SNSHandler}
  */
 exports.handler = async function handler (event, context) {
   /** @type {typeof S3Client} */
   const S3 = typeof context?.clientContext?.Custom?.S3Client === 'function'
     ? context.clientContext.Custom.S3Client
     : S3Client
-  const records = event.Records
+  const records = toS3Event(event).Records
     .filter(r => r.eventName.startsWith('ObjectCreated'))
     .filter(r => r.s3.object.key.endsWith('.car'))
 
@@ -55,4 +55,24 @@ exports.handler = async function handler (event, context) {
 
     await s3.send(putCmd)
   }
+}
+
+/**
+ * Extract an S3Event from the passed SNSEvent.
+ * @param {import('aws-lambda').SNSEvent} snsEvent
+ * @returns {import('aws-lambda').S3Event}
+ */
+function toS3Event (snsEvent) {
+  const s3Event = { Records: [] }
+  for (const snsRec of snsEvent.Records) {
+    try {
+      for (const s3Rec of JSON.parse(snsRec.Sns.Message).Records || []) {
+        if (s3Rec.eventSource !== 'aws:s3') continue
+        s3Event.Records.push(s3Rec)
+      }
+    } catch (err) {
+      console.error(`failed to extract S3Event record from SNSEvent record: ${err.message}`)
+    }
+  }
+  return s3Event
 }

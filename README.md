@@ -5,7 +5,7 @@
 
 AWS Lambda that creates CARv2 side indexes for CAR files uploaded to an S3 bucket.
 
-<img src="https://user-images.githubusercontent.com/152863/172424487-9d4d09df-df33-4fa1-a483-ff6565047bd6.png" width="471"/>
+<img src="https://user-images.githubusercontent.com/152863/173384826-e6e53826-0a27-4c0e-9b8e-8f8db5540cc7.png" width="541"/>
 
 Note: The Lambda needs a policy with `GetObject` and `PutObject` access to the bucket it is deployed on.
 

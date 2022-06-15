@@ -3,7 +3,7 @@ on:
   push:
     branches: [dev]
   workflow_dispatch:
-    branches: [dev]
+    ref: dev
 env:
   REGISTRY: ghcr.io
 jobs:

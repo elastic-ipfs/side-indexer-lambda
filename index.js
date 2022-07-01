@@ -3,8 +3,8 @@ const { MultihashIndexSortedWriter } = require('cardex')
 const { CarIndexer } = require('@ipld/car/indexer')
 const { Readable } = require('stream')
 
-const maxRetries = 3
-const retryDelay = 500
+const maxRetries = process.env.MAX_RETRIES ? parseInt(process.env.MAX_RETRIES) : 3
+const retryDelay = process.env.RETRY_DELAY ? parseInt(process.env.RETRY_DELAY) : 500
 
 /**
  * @type {import('aws-lambda').SNSHandler}

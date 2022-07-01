@@ -1,7 +1,10 @@
 const { S3Client, GetObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3')
 const { MultihashIndexSortedWriter } = require('cardex')
 const { CarIndexer } = require('@ipld/car/indexer')
-const { concat } = require('uint8arrays')
+const { Readable } = require('stream')
+
+const maxRetries = 3
+const retryDelay = 500
 
 /**
  * @type {import('aws-lambda').SNSHandler}
@@ -23,30 +26,31 @@ exports.handler = async function handler (event, context) {
       Key: r.s3.object.key
     })
 
-    const res = await s3.send(getCmd)
+    await retry(async () => {
+      const res = await s3.send(getCmd)
 
-    const { writer, out } = MultihashIndexSortedWriter.create()
-    ;(async () => {
-      const indexer = await CarIndexer.fromIterable(res.Body)
-      for await (const blockIndexData of indexer) {
-        await writer.put(blockIndexData)
-      }
-      await writer.close()
-    })()
+      const { writer, out } = MultihashIndexSortedWriter.create()
+      const stream = Readable.from(out)
+      ;(async () => {
+        try {
+          const indexer = await CarIndexer.fromIterable(res.Body)
+          for await (const blockIndexData of indexer) {
+            await writer.put(blockIndexData)
+          }
+          await writer.close()
+        } catch (err) {
+          stream.destroy(err)
+        }
+      })()
 
-    // TODO: stream?
-    const chunks = []
-    for await (const chunk of out) {
-      chunks.push(chunk)
-    }
+      const putCmd = new PutObjectCommand({
+        Bucket: r.s3.bucket.name,
+        Key: r.s3.object.key + '.idx',
+        Body: stream
+      })
 
-    const putCmd = new PutObjectCommand({
-      Bucket: r.s3.bucket.name,
-      Key: r.s3.object.key + '.idx',
-      Body: concat(chunks)
+      await s3.send(putCmd)
     })
-
-    await s3.send(putCmd)
   }
 }
 
@@ -68,4 +72,16 @@ function toS3Event (snsEvent) {
     }
   }
   return s3Event
+}
+
+async function retry (fn) {
+  let attempts = 0
+  while (true) {
+    try {
+      return await fn()
+    } catch (err) {
+      if (++attempts >= maxRetries) throw err
+    }
+    await new Promise(resolve => setTimeout(resolve, retryDelay))
+  }
 }

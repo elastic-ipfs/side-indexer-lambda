@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { MultihashIndexSortedReader } from 'cardex'
-import { equals } from 'uint8arrays'
+import { concat, equals } from 'uint8arrays'
 import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import { CID } from 'multiformats'
 import * as raw from 'multiformats/codecs/raw'
@@ -28,7 +28,11 @@ test('creates an index on put', async t => {
         return { Body: fs.createReadStream(carPath) }
       }
       if (cmd instanceof PutObjectCommand) {
-        putData = cmd.input.Body
+        const chunks = []
+        for await (const chunk of cmd.input.Body) {
+          chunks.push(chunk)
+        }
+        putData = concat(chunks)
         return
       }
       throw new Error('unexpected command')
@@ -63,4 +67,36 @@ test('creates an index on put', async t => {
     console.log(`${CID.createV1(raw.code, entry.multihash)}, @ ${entry.offset}`)
   }
   t.true(isRootBlockIndexed, 'root CID indexed')
+})
+
+test('retries', async t => {
+  let attempts = 0
+  class MockS3Client {
+    async send () {
+      attempts++
+      throw new Error('boom')
+    }
+  }
+
+  const event = {
+    Records: [{
+      Sns: {
+        Message: JSON.stringify({
+          Records: [{
+            eventSource: 'aws:s3',
+            eventName: 'ObjectCreated:Put',
+            s3: {
+              bucket: { name: 'test' },
+              object: { key: 'bafyxxx.car' }
+            }
+          }]
+        })
+      }
+    }]
+  }
+
+  const context = { clientContext: { Custom: { S3Client: MockS3Client } } }
+
+  await t.throwsAsync(() => handler(event, context))
+  t.is(attempts, 3)
 })

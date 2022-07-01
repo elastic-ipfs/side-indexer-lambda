@@ -4,7 +4,7 @@ const { CarIndexer } = require('@ipld/car/indexer')
 const { Readable } = require('stream')
 
 const maxRetries = process.env.MAX_RETRIES ? parseInt(process.env.MAX_RETRIES) : 3
-const retryDelay = process.env.RETRY_DELAY ? parseInt(process.env.RETRY_DELAY) : 500
+const retryDelay = process.env.RETRY_DELAY ? parseInt(process.env.RETRY_DELAY) : 100
 
 /**
  * @type {import('aws-lambda').SNSHandler}
@@ -82,6 +82,8 @@ async function retry (fn) {
     } catch (err) {
       if (++attempts >= maxRetries) throw err
     }
-    await new Promise(resolve => setTimeout(resolve, retryDelay))
+    await sleep(retryDelay)
   }
 }
+
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))

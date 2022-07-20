@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { MultihashIndexSortedReader } from 'cardex'
-import { concat, equals } from 'uint8arrays'
+import { equals } from 'uint8arrays'
 import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import { CID } from 'multiformats'
 import * as raw from 'multiformats/codecs/raw'
@@ -28,11 +28,7 @@ test('creates an index on put', async t => {
         return { Body: fs.createReadStream(carPath) }
       }
       if (cmd instanceof PutObjectCommand) {
-        const chunks = []
-        for await (const chunk of cmd.input.Body) {
-          chunks.push(chunk)
-        }
-        putData = concat(chunks)
+        putData = cmd.input.Body
         return
       }
       throw new Error('unexpected command')

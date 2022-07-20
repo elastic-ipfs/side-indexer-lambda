@@ -1,7 +1,7 @@
 const { S3Client, GetObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3')
 const { MultihashIndexSortedWriter } = require('cardex')
 const { CarIndexer } = require('@ipld/car/indexer')
-const { Readable } = require('stream')
+const { concat } = require('uint8arrays')
 
 const maxRetries = process.env.MAX_RETRIES ? parseInt(process.env.MAX_RETRIES) : 3
 const retryDelay = process.env.RETRY_DELAY ? parseInt(process.env.RETRY_DELAY) : 100
@@ -30,23 +30,34 @@ exports.handler = async function handler (event, context) {
       const res = await s3.send(getCmd)
 
       const { writer, out } = MultihashIndexSortedWriter.create()
-      const stream = Readable.from(out)
+      /** @type {Error?} */
+      let error
       ;(async () => {
         try {
           const indexer = await CarIndexer.fromIterable(res.Body)
           for await (const blockIndexData of indexer) {
             await writer.put(blockIndexData)
           }
-          await writer.close()
         } catch (err) {
-          stream.destroy(err)
+          error = err
+        } finally {
+          await writer.close()
         }
       })()
+
+      const chunks = []
+      for await (const chunk of out) {
+        chunks.push(chunk)
+      }
+
+      if (error) {
+        throw error
+      }
 
       const putCmd = new PutObjectCommand({
         Bucket: r.s3.bucket.name,
         Key: r.s3.object.key + '.idx',
-        Body: stream
+        Body: concat(chunks)
       })
 
       await s3.send(putCmd)

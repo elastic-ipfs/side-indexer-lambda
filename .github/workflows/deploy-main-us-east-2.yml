@@ -1,4 +1,4 @@
-name: deploy
+name: Build And Deploy (US-EAST-2)
 on:
   push:
     branches: [main, feat/multi-region-prod-deploy-2]

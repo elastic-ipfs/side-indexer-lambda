@@ -1,7 +1,7 @@
 name: Build And Deploy (US-WEST-2)
 on:
   push:
-    branches: [main, feat/multi-region-prod-deploy-2]
+    branches: [main]
   workflow_dispatch:
 env:
   REGISTRY: ghcr.io
@@ -28,5 +28,5 @@ jobs: # We need two separate builds as each is going to a different ECR repo
     secrets:
       aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
       aws_role_id: ${{ secrets.AWS_ROLE_ID }}
-      aws_region: ${{ secrets.AWS_REGION_PROD_1 }}
+      aws_region: us-west-2
       aws_ecr_repository: ${{ secrets.AWS_ECR_REPOSITORY_US_WEST_2_PROD }}

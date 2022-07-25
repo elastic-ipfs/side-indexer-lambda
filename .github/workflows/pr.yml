@@ -16,5 +16,3 @@ jobs:
       aws_role_id: ${{ secrets.AWS_ROLE_ID }}
       aws_region: us-west-2
       aws_ecr_repository: any
-
-

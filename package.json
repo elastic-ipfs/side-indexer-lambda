@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ipfs-elastic-provider/side-indexer-lambda.git"
+    "url": "git+https://github.com/elastic-ipfs/side-indexer-lambda.git"
   },
   "keywords": [
     "index",
@@ -34,7 +34,7 @@
     "aws"
   ],
   "bugs": {
-    "url": "https://github.com/ipfs-elastic-provider/side-indexer-lambda/issues"
+    "url": "https://github.com/elastic-ipfs/side-indexer-lambda/issues"
   },
-  "homepage": "https://github.com/ipfs-elastic-provider/side-indexer-lambda#readme"
+  "homepage": "https://github.com/elastic-ipfs/side-indexer-lambda#readme"
 }

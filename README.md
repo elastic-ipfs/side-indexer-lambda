@@ -16,3 +16,7 @@ Feel free to join in. All welcome. [Open an issue](https://github.com/ipfs-elast
 ## License
 
 Dual-licensed under [MIT + Apache 2.0](https://github.com/ipfs-elastic-provider/side-indexer-lambda/blob/main/LICENSE.md)
+
+## Issues
+
+Please report issues in the [elastic-ipfs/elastic-ipfs repo](https://github.com/elastic-ipfs/elastic-ipfs/issues).

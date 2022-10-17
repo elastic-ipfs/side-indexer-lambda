@@ -1,4 +1,4 @@
-name: Build And Deploy (US-EAST-2)
+name: Staging/Prod (US-EAST-2) | Build And Deploy
 on:
   push:
     branches: [main]

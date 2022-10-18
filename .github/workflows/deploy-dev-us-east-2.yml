@@ -1,7 +1,5 @@
-name: Build and Deploy Dev
+name: Dev | Build And Deploy
 on:
-  push:
-    branches: [dev]
   workflow_dispatch:
     ref: dev
 env:
